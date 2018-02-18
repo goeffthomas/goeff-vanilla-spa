@@ -5,60 +5,72 @@ const COMMENTS_PAGE_TEMPLATE = `
     </div>
 `;
 
+const NO_COMMENTS_PAGE_TEMPLATE = `
+    <h1>This story has no comments yet! :(</h1>
+`;
+
 // Component that represents the comments page
 export class CommentsPageComponent extends BaseComponent {
-    commentListLocation;    // Holds location for story container
-    topLevelIds;            // Holds IDs for top level comments
-
     constructor(story) {
         super();
-        this.topLevelIds = story.kids;
-        this.renderedComments = [];
-
-        this.loadCommentsPage();
+        if (story.kids && story.kids.length)
+            this.loadCommentsPage(story.kids);
+        else
+            this.loadNoCommentsPage();
     }
 
-    async loadCommentsPage() {
+    async loadCommentsPage(topLevelIds) {
         this.replaceRender(COMMENTS_PAGE_TEMPLATE, document.getElementById('content'));
-
-        // Now that div is available, get commentListLocation
-        this.commentListLocation = document.getElementById('commentList');
-
-        await this.loadComments(this.topLevelIds, this.commentListLocation);
+        await this.loadComments(topLevelIds, document.getElementById('commentList'), true);
     }
 
-    async loadComments(parentIds, parentLocation) {
-        for (let each of parentIds) {
-            let comment = await getItem(each);
-            new CommentComponent(comment, parentLocation);
+    loadNoCommentsPage() {
+        this.replaceRender(NO_COMMENTS_PAGE_TEMPLATE, document.getElementById('content'));
+    }
 
-            // Use recursion to handle nested comments
-            if (comment.kids && comment.kids.length)
-                await this.loadComments(comment.kids, document.getElementById(`${comment.id}`))
+    // Pass topLevel boolean to set nesting left-most
+    async loadComments(parentIds, parentLocation, topLevel) {
+        for (let each of parentIds) {
+            try {
+                let comment = await getItem(each);
+                new CommentComponent(comment, parentLocation, topLevel);
+    
+                // Use recursion to handle nested comments
+                if (comment.kids && comment.kids.length)
+                    await this.loadComments(comment.kids, document.getElementById(`${comment.id}`), false)
+            } catch (err) {
+                // Don't display error if just one branch of comments fails
+                // TODO: Determine how to handle this error aside from logging
+            }
         }
     }
 }
 
 // Reusable component for each comment on the comments page
 class CommentComponent extends BaseComponent {
-    constructor(comment, commentLocation) {
+    constructor(comment, commentLocation, topLevel) {
         super();
-        // Merge values into template
+        // Merge values into template, all nested comments default to hidden
         let commentTemplate = `
-            <div id=${comment.id}>
-                <p>${comment.text}</p>
+            <p>${comment.text}</p>
+            <a id='toggle${comment.id}' class='clickable'>${comment.kids ? comment.kids.length : 0} Comments</a> 
+            <div id=${comment.id} class='childContainer hidden'>
             </div>
         `;
-        this.appendRender('div', commentTemplate, commentLocation);
 
-        // Now that div available, set click handler for collapseChildren
-        document.getElementById(`${comment.id}`).onclick = () => {
-            this.collapseChildren(comment.id);
-        }
+        let classes = ['parentComment'];
+        if (!topLevel)
+            classes.push('childComment');
+        this.appendRender('div', commentTemplate, commentLocation, classes);
+        document.getElementById(`toggle${comment.id}`).onclick = this.collapseChildren;
     }
 
-    collapseChildren(commentId) {
-        // TODO: Collapse children
-        console.log(commentId);
+    collapseChildren(event) {
+        event.stopPropagation();
+        let container = event.target.nextElementSibling;
+        if (container.classList.contains('hidden'))
+            container.classList.remove('hidden');
+        else
+            container.classList.add('hidden');
     }
 }

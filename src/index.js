@@ -1,3 +1,3 @@
 import './styles.scss';
 import { AppComponent } from './appComponent';
-new AppComponent();
+let appComponent = new AppComponent();

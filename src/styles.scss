@@ -1,3 +1,20 @@
 body {
+  display: flex;
   background: rgb(255, 102, 0);
+}
+
+header {
+  justify-content: flex-start;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.childComment { 
+  margin-left: 2em; 
 }

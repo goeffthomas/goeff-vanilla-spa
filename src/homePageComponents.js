@@ -3,21 +3,19 @@ import { getTopStories, getItem } from './hackerNewsApi';
 const HOME_PAGE_TEMPLATE = `
     <ul id='storyList'>
     </ul>
-    <button id='loadMoreBtn'>Load More</button>
+    <button id='loadMoreBtn'>Load More Stories</button>
 `;
 
 const ERROR_TEMPLATE = `
-    <h3>Sorry, we seem to be experiencing an error :(</h3>
+    <h1>Sorry, we seem to be experiencing an error :(</h1>
 `;
 
 // Component that represents the landing page
 export class HomePageComponent extends BaseComponent {
-    contentLocation;        // Holds location for page container
     storyListLocation;      // Holds location for story container
     storyIds;               // Holds array of top story IDs
     topStories;             // Holds story data from API waiting to be rendered
     renderedStories;        // Holds rendered stories
-    renderedStoryCount;     // Rendered story count for handling pages of stories   
 
     constructor() {
         super();
@@ -26,16 +24,16 @@ export class HomePageComponent extends BaseComponent {
         this.topStories = [];       
         this.renderedStories = [];
         this.page = 1;
-        this.contentLocation = document.getElementById('content');
 
         this.loadHomePage();
     }
 
     async loadHomePage() {
+        let contentLocation = document.getElementById('content');
         try {
             // Failure on await will throw to catch
             this.storyIds = await getTopStories();
-            this.replaceRender(HOME_PAGE_TEMPLATE, this.contentLocation);
+            this.replaceRender(HOME_PAGE_TEMPLATE, contentLocation);
     
             // Now that ul and button are available, get storyListLocation and set click handler for loadMore
             this.storyListLocation = document.getElementById('storyList');
@@ -47,7 +45,7 @@ export class HomePageComponent extends BaseComponent {
             await this.loadStories(this.page);
         } catch (err) {
             console.log(err);
-            this.showError();
+            this.replaceRender(ERROR_TEMPLATE, contentLocation);
         }
     }
 
@@ -79,15 +77,6 @@ export class HomePageComponent extends BaseComponent {
             }
         }
     }
-
-    showError() {
-        this.replaceRender(ERROR_TEMPLATE, this.contentLocation);
-    }
-
-    async loadMore() {
-        this.page++;
-        await this.loadStories(this.page);
-    }
 }
 
 // Reusable component for each story on the landing page
@@ -98,15 +87,15 @@ class StoryComponent extends BaseComponent {
         let storyTemplate = `
             <li>
                 <a href=${story.url}>${story.title}</a>
-                <a id='${story.id}'>${story.descendants || 0} Comments</a>
+                <p class='clickable' id='${story.id}'>${story.descendants || 0} Comments</p>
             </li>
         `;
         this.appendRender('li', storyTemplate, storyListLocation);
 
-        // Now that li available, set click handler for goToCommentsPage
-        document.getElementById(`${story.id}`).onclick = () => {
-            this.goToCommentsPage(story); 
-        }
+        // Check existence of link before attaching handler due to async loading
+        let commentsLink = document.getElementById(`${story.id}`);
+        if (commentsLink)
+            commentsLink.onclick = () => { this.goToCommentsPage(story); }
     }
 
     goToCommentsPage(story) {

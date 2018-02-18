@@ -7,11 +7,13 @@ export class BaseComponent {
         }
     }
 
-    // Pass in tag to avoid parsing template for tag type
-    appendRender(tag, template, location) {
+    // Pass in tag to avoid parsing template for tag type and classes (optional)
+    appendRender(tag, template, location, classes) {
         if (tag && template && location) {
             let element = document.createElement(tag);
             element.innerHTML = template;
+            if (classes && classes.length) 
+                element.className = classes.join(' ');
             location.appendChild(element);
         }
     }

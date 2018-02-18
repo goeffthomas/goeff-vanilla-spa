@@ -3,7 +3,7 @@ import { HomePageComponent } from './homePageComponents';
 import { CommentsPageComponent } from './commentsPageComponent';
 const LAYOUT_TEMPLATE = `
     <header>
-        <a id='logoBtn'><img src='https://news.ycombinator.com/y18.gif' /></a>
+        <a id='logoBtn' class='clickable'><img src='https://news.ycombinator.com/y18.gif' /></a>
         <p>HACKER NEWS!</p>
     </header>
     <div id='content'></div>
@@ -33,7 +33,7 @@ export class AppComponent extends BaseComponent {
     }
 
     goToHomePage() {
-        window.history.pushState(null, null, '/home');
+        window.history.pushState(null, null, '/');
         let popStateEvent = new PopStateEvent('popstate');
         dispatchEvent(popStateEvent);
     }
