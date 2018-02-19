@@ -3,7 +3,7 @@ import { getTopStories, getItem } from './hackerNewsApi';
 const HOME_PAGE_TEMPLATE = `
     <ul id='storyList'>
     </ul>
-    <button id='loadMoreBtn'>Load More Stories</button>
+    <button id='loadMoreBtn' class='hidden'>Load More Stories</button>
 `;
 
 const ERROR_TEMPLATE = `
@@ -43,6 +43,11 @@ export class HomePageComponent extends BaseComponent {
             }
     
             await this.loadStories(this.page);
+
+            // Only show Load More button after first page has loaded
+            let loadMoreButton = document.getElementById('loadMoreBtn');
+            if (loadMoreButton && loadMoreButton.classList)
+                loadMoreButton.classList.remove('hidden');
         } catch (err) {
             console.log(err);
             this.replaceRender(ERROR_TEMPLATE, contentLocation);
@@ -80,16 +85,16 @@ export class HomePageComponent extends BaseComponent {
 }
 
 // Reusable component for each story on the landing page
+// NOTE: Can be exported if needed for other components later
 class StoryComponent extends BaseComponent {
     constructor(story, storyListLocation) {
         super();
         // Merge values into template
         let storyTemplate = `
-            <li>
-                <a href=${story.url}>${story.title}</a>
-                <p class='clickable' id='${story.id}'>${story.descendants || 0} Comments</p>
-            </li>
+            <a href=${story.url}>${story.title}</a>
+            <a class='clickable' id='${story.id}'>${story.descendants || 0} Comments</a>
         `;
+
         this.appendRender('li', storyTemplate, storyListLocation);
 
         // Check existence of link before attaching handler due to async loading

@@ -1,10 +1,95 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
 body {
+  background: black;
   display: flex;
-  background: rgb(255, 102, 0);
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+#app {
+  background:#ff944d;
+  flex: initial;
+  width: 80%;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+}
+
+#storyList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+#commentList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 2em;
+  margin: 0;
+  list-style-type: none;
 }
 
 header {
-  justify-content: flex-start;
+  background: rgb(255, 102, 0);
+  padding: 1em;
+  margin-bottom: 1.5em;
+  display: flex;
+  align-items: flex-start;
+
+  h3 {
+    margin: 0 0 0 .5em;
+  }
+}
+
+#logoBtn {
+  border: solid white 1px;
+}
+
+#loadMoreBtn {
+  -webkit-appearance: none;
+  margin: 1em;
+  padding: 1em;
+  align-items: center;
+  flex: initial;
+  width: 50%;
+  align-self: center;
+  font-family: Verdana, Geneva, sans-serif;
+  border-radius: .2em;
+  cursor: pointer;
+  transition-duration: 0.4s;
+  background: rgb(255, 102, 0);
+  color: white;
+}
+
+#loadMoreBtn:hover {
+  color: black;
+  background:  #ffd1b3;
 }
 
 .clickable {
@@ -17,4 +102,44 @@ header {
 
 .childComment { 
   margin-left: 2em; 
+}
+
+li, .parentComment:not(.childComment) {
+  opacity: 0;
+  animation: fadeIn 0.9s 1;
+  animation-fill-mode: forwards;
+  animation-delay: 0.3s;
+}
+
+li, .parentComment {
+  padding: 1em;
+  background:  #ffd1b3;
+  margin-top: .5em;
+  align-items: center;
+  flex: initial;
+  width: 80%;
+}
+
+.childComment {
+  border-left: solid rgba(0, 0, 0, .75) 2px;
+  margin: 1.5em 0;
+}
+
+li {
+  border-radius: .2em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  a[href] {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  a.clickable{
+    margin-top: 2px;
+    font-size: 14px;
+    text-indent: 15px;
+  }
 }

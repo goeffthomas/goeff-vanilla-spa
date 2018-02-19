@@ -47,6 +47,7 @@ export class CommentsPageComponent extends BaseComponent {
 }
 
 // Reusable component for each comment on the comments page
+// NOTE: Can be exported if needed for other components later
 class CommentComponent extends BaseComponent {
     constructor(comment, commentLocation, topLevel) {
         super();

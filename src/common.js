@@ -19,10 +19,10 @@ export class BaseComponent {
     }
 }
 
-// Used to make AJAX requests
+// Used to make AJAX requests; placed here and exported for use by future APIs
 // NOTE: Extension to support other methods besides GET would necessitate
 // passing through method, payload, and other configurations. We're only
-// doing GETs in this sample, so keeping implementation simple
+// doing GETs in this sample, so keeping implementation simple.
 export async function makeRequest(url) {
     return new Promise((res, rej) => {
         let ajax = new XMLHttpRequest();

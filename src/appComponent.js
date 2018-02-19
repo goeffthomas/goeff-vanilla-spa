@@ -3,8 +3,8 @@ import { HomePageComponent } from './homePageComponents';
 import { CommentsPageComponent } from './commentsPageComponent';
 const LAYOUT_TEMPLATE = `
     <header>
-        <a id='logoBtn' class='clickable'><img src='https://news.ycombinator.com/y18.gif' /></a>
-        <p>HACKER NEWS!</p>
+        <img src='https://news.ycombinator.com/y18.gif' id='logoBtn' class='clickable'/>
+        <h3>Hacker News</h3>
     </header>
     <div id='content'></div>
 `;
