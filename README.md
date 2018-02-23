@@ -6,9 +6,12 @@ Install node:
 
 https://nodejs.org/en/
 
+(Don't forget to restart computer after installation)
+
 Open your terminal and:
 
 ```
+git clone https://github.com/goeffthomas/goeff-vanilla-spa.git
 cd goeff-vanilla-spa
 npm install
 npm start
